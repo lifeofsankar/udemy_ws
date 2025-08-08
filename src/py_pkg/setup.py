@@ -26,7 +26,8 @@ setup(
             "number_publisher = py_pkg.number_publisher:main",
             "number_counter = py_pkg.number_counter:main",
             "add_twp_ints_server = py_pkg.add_two_ints_server:main",
-            "add_two_ints_client_no_oop = py_pkg.add_two_ints_client_no_oop:main"
+            "add_two_ints_client_no_oop = py_pkg.add_two_ints_client_no_oop:main",
+            "add_two_ints_client = py_pkg.add_two_ints_client:main"
         ],
     },
 )
