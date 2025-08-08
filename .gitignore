@@ -1,0 +1,8 @@
+# Build output directory
+build/
+
+# Local install directory
+install/
+
+# Log files and directories
+log/
