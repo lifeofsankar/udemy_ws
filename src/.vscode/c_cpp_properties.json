@@ -7,7 +7,8 @@
       },
       "includePath": [
         "/opt/ros/jazzy/include/**",
-        "/usr/include/**"
+        "/usr/include/**",
+        "/home/admin/udemy_ws/install/our_robot_interfaces/include/**"
       ],
       "name": "RDE",
       "intelliSenseMode": "gcc-x64",
