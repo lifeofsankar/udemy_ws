@@ -29,6 +29,9 @@ ament_target_dependencies(add_two_ints_client_no_oop rclcpp example_interfaces)
 add_executable(add_two_ints_client src/add_two_ints_client.cpp)
 ament_target_dependencies(add_two_ints_client rclcpp example_interfaces)
 
+add_executable(hw_status_publisher src/hardware_status_publisher.cpp)
+ament_target_dependencies(hw_status_publisher rclcpp our_robot_interfaces)
+
 install(TARGETS
   cpp_node
   robot_news_stat
@@ -36,6 +39,7 @@ install(TARGETS
   add_two_ints_server
   add_two_ints_client_no_oop
   add_two_ints_client
+  hw_status_publisher
   DESTINATION lib/${PROJECT_NAME}
 )
 
