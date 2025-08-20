@@ -20,6 +20,18 @@ ament_target_dependencies(robot_news_stat rclcpp example_interfaces)
 add_executable(phone src/phone.cpp)
 ament_target_dependencies(phone rclcpp example_interfaces)
 
+add_executable(number_counter src/number_counter.cpp)
+ament_target_dependencies(number_counter rclcpp example_interfaces)
+
+add_executable(number_publisher src/number_publisher.cpp)
+ament_target_dependencies(number_publisher rclcpp example_interfaces)
+
+add_executable(led_panel src/led_panel.cpp)
+ament_target_dependencies(led_panel rclcpp our_robot_interfaces)
+
+add_executable(battery src/battery.cpp)
+ament_target_dependencies(battery rclcpp our_robot_interfaces)
+
 add_executable(add_two_ints_server src/add_two_ints_server.cpp)
 ament_target_dependencies(add_two_ints_server rclcpp example_interfaces)
 
@@ -36,6 +48,10 @@ install(TARGETS
   cpp_node
   robot_news_stat
   phone
+  number_counter
+  number_publisher
+  led_panel
+  battery
   add_two_ints_server
   add_two_ints_client_no_oop
   add_two_ints_client

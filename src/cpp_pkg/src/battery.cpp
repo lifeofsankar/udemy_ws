@@ -1,5 +1,5 @@
 #include "rclcpp/rclcpp.hpp"
-#include "my_robot_interfaces/srv/set_led.hpp"
+#include "our_robot_interfaces/srv/set_led.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
@@ -13,7 +13,7 @@ public:
         battery_timer_ = this->create_wall_timer(
             0.1s,
             std::bind(&BatteryNode::checkBatteryState, this));
-        set_led_client_ = this->create_client<my_robot_interfaces::srv::SetLed>("set_led");
+        set_led_client_ = this->create_client<our_robot_interfaces::srv::SetLed>("set_led");
         while (!set_led_client_->wait_for_service(1s))
         {
             RCLCPP_WARN(this->get_logger(), "Waiting for Service Server to be up...");
@@ -49,7 +49,7 @@ private:
 
     void callSetLed(int led_number, int state)
     {
-        auto request = std::make_shared<my_robot_interfaces::srv::SetLed::Request>();
+        auto request = std::make_shared<our_robot_interfaces::srv::SetLed::Request>();
         request->led_number = led_number;
         request->state = state;
 
@@ -57,7 +57,7 @@ private:
             request, std::bind(&BatteryNode::callbackCallSetLed, this, _1));
     }
 
-    void callbackCallSetLed(rclcpp::Client<my_robot_interfaces::srv::SetLed>::SharedFuture future)
+    void callbackCallSetLed(rclcpp::Client<our_robot_interfaces::srv::SetLed>::SharedFuture future)
     {
         auto response = future.get();
         if (response->success) {
@@ -72,7 +72,7 @@ private:
     double last_time_battery_state_changed_;
 
     rclcpp::TimerBase::SharedPtr battery_timer_;
-    rclcpp::Client<my_robot_interfaces::srv::SetLed>::SharedPtr set_led_client_;
+    rclcpp::Client<our_robot_interfaces::srv::SetLed>::SharedPtr set_led_client_;
 };
 
 int main(int argc, char **argv)

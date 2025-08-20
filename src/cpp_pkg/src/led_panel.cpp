@@ -1,6 +1,6 @@
 #include "rclcpp/rclcpp.hpp"
-#include "my_robot_interfaces/msg/led_state_array.hpp"
-#include "my_robot_interfaces/srv/set_led.hpp"
+#include "our_robot_interfaces/msg/led_state_array.hpp"
+#include "our_robot_interfaces/srv/set_led.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
@@ -11,10 +11,10 @@ public:
     LedPanelNode() : Node("led_panel"), led_states_(3, 0)
     {
         led_states_publisher_ =
-            this->create_publisher<my_robot_interfaces::msg::LedStateArray>("led_panel_state", 10);
+            this->create_publisher<our_robot_interfaces::msg::LedStateArray>("led_panel_state", 10);
         led_states_timer_ =
             this->create_wall_timer(5s, std::bind(&LedPanelNode::publishLedStates, this));
-        set_led_service_ = this->create_service<my_robot_interfaces::srv::SetLed>(
+        set_led_service_ = this->create_service<our_robot_interfaces::srv::SetLed>(
             "set_led",
             std::bind(&LedPanelNode::callbackSetLed, this, _1, _2));
         RCLCPP_INFO(this->get_logger(), "Led panel node has been started");
@@ -23,13 +23,13 @@ public:
 private:
     void publishLedStates()
     {
-        auto msg = my_robot_interfaces::msg::LedStateArray();
+        auto msg = our_robot_interfaces::msg::LedStateArray();
         msg.led_states = led_states_;
         led_states_publisher_->publish(msg);
     }
 
-    void callbackSetLed(const my_robot_interfaces::srv::SetLed::Request::SharedPtr request,
-                        const my_robot_interfaces::srv::SetLed::Response::SharedPtr response)
+    void callbackSetLed(const our_robot_interfaces::srv::SetLed::Request::SharedPtr request,
+                        const our_robot_interfaces::srv::SetLed::Response::SharedPtr response)
     {
         int64_t led_number = request->led_number;
         int64_t state = request->state;
@@ -53,9 +53,9 @@ private:
 
     std::vector<int64_t> led_states_;
 
-    rclcpp::Publisher<my_robot_interfaces::msg::LedStateArray>::SharedPtr led_states_publisher_;
+    rclcpp::Publisher<our_robot_interfaces::msg::LedStateArray>::SharedPtr led_states_publisher_;
     rclcpp::TimerBase::SharedPtr led_states_timer_;
-    rclcpp::Service<my_robot_interfaces::srv::SetLed>::SharedPtr set_led_service_;
+    rclcpp::Service<our_robot_interfaces::srv::SetLed>::SharedPtr set_led_service_;
 };
 
 int main(int argc, char **argv)
