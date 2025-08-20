@@ -7,9 +7,13 @@ from example_interfaces.msg import Int64
 class NumPubNode(Node): 
     def __init__(self):
         super().__init__("number_publisher") 
-        self.number_ = 2
+        self.declare_parameter("number", 2)
+        self.declare_parameter("timer_period", 1.0)
+        self.number_ = self.get_parameter("number").value
+        self.timer_period_ = self.get_parameter("timer_period").value
+        
         self.number_publisher_ = self.create_publisher(Int64, "number", 10)
-        self.number_timer_ = self.create_timer(1.0, self.publish_number)
+        self.number_timer_ = self.create_timer(self.timer_period_, self.publish_number)
         self.get_logger().info("NUmber publisher has been started")
 
     def publish_number(self):
