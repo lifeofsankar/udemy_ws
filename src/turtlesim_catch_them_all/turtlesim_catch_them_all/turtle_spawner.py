@@ -5,6 +5,8 @@ import math
 from rclpy.node import Node
 from turtlesim.srv import Spawn
 from functools import partial
+from our_robot_interfaces.msg import Turtle
+from our_robot_interfaces.msg import TurtleArray
  
  
 class TurtleSpawnerNode(Node): 
@@ -14,6 +16,13 @@ class TurtleSpawnerNode(Node):
         
         self.turtle_name_prefix_ = "turtle"
         self.turtle_counter_ = 0
+        self.alive_turtles_ = []
+        self.alive_turtles_publisher_ = self.create_publisher(
+            TurtleArray,
+            "alive_turtles",
+            10
+        )
+        
         self.spawn_client_ = self.create_client(
             Spawn,
             "/spawn"
@@ -23,6 +32,11 @@ class TurtleSpawnerNode(Node):
             2.0,
             self.spawn_new_turtle
         )
+    
+    def publish_alive_turtle(self):
+        msg = TurtleArray()
+        msg.turtles = self.alive_turtles_
+        self.alive_turtles_publisher_.publish(msg)
     
     def spawn_new_turtle(self):
         self.turtle_counter_ += 1
@@ -35,7 +49,7 @@ class TurtleSpawnerNode(Node):
     
     def call_spawn_service(self, turtle_name, x, y, theta):
         while not self.spawn_client_.wait_for_service(1.0):
-            self.get_logger().warm("Waiting for spawn service...")
+            self.get_logger().warn("Waiting for spawn service...")
             
         request = Spawn.Request()
         request.x = x
@@ -56,8 +70,13 @@ class TurtleSpawnerNode(Node):
         response: Spawn.Response = future.result()
         if response.name != "":
             self.get_logger().info("New alive turtle: " + response.name)
-        
- 
+            new_turtle = Turtle()
+            new_turtle.name = response.name
+            new_turtle.x = request.x
+            new_turtle.y = request.y
+            new_turtle.theta = request.theta
+            self.alive_turtles_.append(new_turtle)
+            self.publish_alive_turtle()
  
 def main(args=None):
     rclpy.init(args=args)
