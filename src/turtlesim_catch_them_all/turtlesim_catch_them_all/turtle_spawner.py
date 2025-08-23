@@ -41,7 +41,7 @@ class TurtleSpawnerNode(Node):
         )
         
         self.spawn_turtle_timer_ = self.create_timer(
-            2.0,
+            0.8,
             self.spawn_new_turtle
         )
     
