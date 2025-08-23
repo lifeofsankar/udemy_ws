@@ -3,11 +3,12 @@ import rclpy
 import random
 import math
 from rclpy.node import Node
-from turtlesim.srv import Spawn
 from functools import partial
+from turtlesim.srv import Kill
+from turtlesim.srv import Spawn
 from our_robot_interfaces.msg import Turtle
 from our_robot_interfaces.msg import TurtleArray
- 
+from our_robot_interfaces.srv import CatchTurtle
  
 class TurtleSpawnerNode(Node): 
     
@@ -28,12 +29,28 @@ class TurtleSpawnerNode(Node):
             "/spawn"
         )
         
+        self.kill_client_ = self.create_client(
+            Kill,
+            "/kill"
+        )
+        
+        self.catch_turtle_service_ = self.create_service(
+            CatchTurtle,
+            "catch_turtle",
+            self.callback_catch_turtle
+        )
+        
         self.spawn_turtle_timer_ = self.create_timer(
             2.0,
             self.spawn_new_turtle
         )
     
-    def publish_alive_turtle(self):
+    def callback_catch_turtle(self, request:CatchTurtle.Request, response: CatchTurtle.Response):
+        self.call_kill_service(request.name)
+        response.success = True
+        return response
+    
+    def publish_alive_turtles(self):
         msg = TurtleArray()
         msg.turtles = self.alive_turtles_
         self.alive_turtles_publisher_.publish(msg)
@@ -76,7 +93,25 @@ class TurtleSpawnerNode(Node):
             new_turtle.y = request.y
             new_turtle.theta = request.theta
             self.alive_turtles_.append(new_turtle)
-            self.publish_alive_turtle()
+            self.publish_alive_turtles()
+            
+    def call_kill_service(self, turtle_name):
+        while not self.kill_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for kill service...")
+            
+        request = Kill.Request()
+        request.name = turtle_name
+        
+        future = self.kill_client_.call_async(request)
+        future.add_done_callback(
+            partial(self.callback_call_kill_service, turtle_name=turtle_name))
+        
+    def callback_call_kill_service(self, future, turtle_name):
+        for (i, turtle) in enumerate(self.alive_turtles_):
+            if turtle.name == turtle_name:
+                del self.alive_turtles_[i]
+                self.publish_alive_turtles()
+                break
  
 def main(args=None):
     rclpy.init(args=args)
