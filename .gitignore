@@ -1,0 +1,41 @@
+# ROS 2 build and install folders
+/build/
+/install/
+/log/
+
+# Colcon mixin metadata
+.colcon_install_layout
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# C++ build files
+*.o
+*.so
+*.a
+*.out
+*.exe
+
+# VS Code settings
+.vscode/
+*.code-workspace
+
+# ROS 2 launch files generated
+*.launch.pyc
+
+# URDF / RViz temporary files
+*.rviz~
+
+# Editor backup files
+*~
+*.swp
+*.swo
+
+# macOS junk files
+.DS_Store
+
+# Linux junk files
+.Trash-*
